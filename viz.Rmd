@@ -155,10 +155,109 @@ weather_df %>%
 ## Univariate plots
 
 Histograms are really great
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+```
+
+
+add color
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, color = name)) + #边框有颜色
+  geom_histogram(position = 'dodge')  # 左右排列不同颜色的
+```
+
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name )) +  #填充有颜色
+  geom_histogram(position = 'dodge')
+```
+
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name )) +  
+  geom_histogram() +
+  facet_grid(. ~ name)
+```
 
 
 
 
+Let's try a new geometry
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha = 0.3)
+```
+
+
+
+
+
+
+
+What about boxplot?
+```{r}
+weather_df %>% 
+  ggplot(aes(x = name, y = tmin)) +   #x为name，显示三个图
+  geom_boxplot()
+
+```
+ 
+
+
+
+Trendy plots
+```{r}
+weather_df %>% 
+  ggolot(aes(x = name, y = tmin, fill = name)) +
+  geom_violin(alpha = 0.5) +
+  stat_summary()
+
+```
+
+
+
+
+Ridge plot- the most popular plot of 2017
+```{r}
+weather_df %>% 
+  ggolot(aes(x = tmin, y = name)) +
+  geom_density_ridges()   # 同一个横坐标
+```
+
+
+
+
+
+## Save and embed
+
+Let's save a scatterplot
+```{r}
+weather_plot = 
+  weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color =name)) +
+  geom_point(alpha = 0.5)
+
+ggsave('./results/weather_plot.pdf', weather_plot, width = 8, height = 5)
+```
+
+
+
+What about embedding
+```{r}
+weather_plot
+```
+
+
+embed at different size
+```{r fig.width=12, fig.height=6}
+weather_plot
+```
 
 
 
