@@ -1,0 +1,171 @@
+---
+title: "visualization"
+output: github_document
+---
+
+```{r setup}
+library(tidyverse)
+library(ggridges)
+```
+
+## Load the weather data
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USC00519397", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USC00519397 = "Waikiki_HA",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+
+
+weather_df
+```
+
+
+## scatterplot
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+
+NEW APPRAOCH for the same plot
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+
+
+save and edit a plot object
+```{r}
+weather_plot = 
+  weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax))
+
+weather_plot + geom_point()
+```
+
+
+
+## Advanced scatterplot
+
+Start with the same one and make it fancy
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point() +
+  geom_smooth(se = FALSE)
+```
+
+
+
+WHAT ABOUT the 'aes' placement
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name)) +
+  geom_smooth()
+
+# 变成一条线 之前3条不同颜色线
+```
+
+
+
+
+
+
+facet some things
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.2, size = 0.3) +      #alpha --transparency
+  geom_smooth(se = FALSE, size = 2) +
+  facet_grid(. ~ name)
+# 三张图， 各自分开的
+# . 表示不增加行，name表示列，因此为一行三列
+# 三行一列为 facet_grid(name ~ .)
+```
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, alpha = tmin, color = name)) +
+  geom_point() +      #alpha --transparency 使得值小的时候浅，值大的时候深
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+```
+
+
+
+Let's combine some elements and try a new plot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  gem_point(aes(size = prcp), alpha = 0.5) +   #点的大小和prcp 成正比
+  geom_smooth(se =FALSE) +
+  facet_grid(. ~ name)
+```
+
+
+
+
+##some small notes
+
+how many geoms have to exist?
+
+YOU can have whatever geoms you want.
+
+```{r}
+wweather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_smooth(se = FALSE)
+```
+
+
+
+you can use a neat geom
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()  #菱形的色块
+```
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_density2d() + #contour 等高线
+  geom_point(alpha = 0.3)
+```
+
+
+
+## Univariate plots
+
+Histograms are really great
+
+
+
+
+
+
+
+
+
+
+
+
+
+
